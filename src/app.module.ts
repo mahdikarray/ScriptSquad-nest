@@ -1,25 +1,17 @@
+// src/app.module.ts
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-
-
+import { EditorModule } from './editor/editor.module';
+import { WorkspaceModule } from './workspace/workspace.module';
+import { DocumentsModule } from './Document/documents.module';
 @Module({
   imports: [
-   
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-    }),
-    MongooseModule.forRoot(process.env.DB_URI),
-    UserModule
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/nest?directConnection=true'),
+    EditorModule,
+    WorkspaceModule,
+    DocumentsModule,
+
+    
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
-
-
-
