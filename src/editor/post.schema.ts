@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document } from '../Document/Schemas/Document.schemas';
 
 interface PostData {
     time: number;
