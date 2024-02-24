@@ -8,5 +8,6 @@ import { Post, PostSchema } from './post.schema';
   imports: [MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }])],
   controllers: [EditorController],
   providers: [EditorService],
+  exports: [EditorService], // Export the EditorService
 })
 export class EditorModule {}
