@@ -15,6 +15,7 @@ import { AccountsReceivableModule } from './accounts-receivable/accounts-receiva
 import { ContributionsModule } from './contributions/contributions.module';
 import { AccountsPayableModule } from './accounts-payable/accounts-payable.module';
 import { RolesModule } from './roles/roles.module';
+import { AuthController } from './auth/auth.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,11 +34,13 @@ import { RolesModule } from './roles/roles.module';
     ContributionsModule,
     AccountsPayableModule,
     RolesModule,
+    AuthModule
   ],
-  providers: [
+  providers: [ 
     {
       provide: APP_GUARD,
       useClass: AtGuard,
+     
     },
   ],
 })
