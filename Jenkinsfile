@@ -2,33 +2,37 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Install dependencies') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Clean') {
-            steps {
-                sh 'rm -rf target/*'
+                script {
+                    // Install dependencies using npm
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                script {
+                    // Build the Nest.js project
+                    sh 'npm run build'
+                }
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Build successful! Deploying...'
-            // Add deployment steps here
+        stage('Test') {
+            steps {
+                script {
+                    // Run tests for the Nest.js project
+                    sh 'npm test'
+                }
+            }
         }
-        failure {
-            echo 'Build failed! Sending notification...'
-            // Add notification steps here
+
+        stage('Deploy') {
+            steps {
+                // Add deployment steps here
+            }
         }
     }
 }
