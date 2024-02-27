@@ -33,11 +33,12 @@ export class User {
   password: string;
 
   @Prop({
-    type: String,
-    enum: ['admin', 'user', 'vendedor'],
-    default: 'user',
+    type: [String], // Définir le type comme un tableau de chaînes
+    // enum: ['admin', 'user', 'vendedor'],
+    default: ['user'], // Définir la valeur par défaut comme un tableau avec 'user'
   })
-  role: string;
+  role: string[]; // Déclarer le type comme un tableau de chaînes
+  
 
   @Prop()
   hashdRt: string;

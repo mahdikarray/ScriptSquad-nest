@@ -13,12 +13,12 @@ async function bootstrap() {
     }),
   );
 
-  app.setGlobalPrefix('v1');
+  // app.setGlobalPrefix('v1');
 
   app.use(helmet());
 
   app.enableCors({
-    origin: 'http://127.0.0.1:5173',
+    origin: '*',
     credentials: true,
   });
 

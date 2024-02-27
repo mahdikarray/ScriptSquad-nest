@@ -37,9 +37,10 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
     });
-    res.send({
-      success: true,
-    });
+    // res.send({
+    //   success: true,
+    // });
+    return token;
   }
 
   @Public()

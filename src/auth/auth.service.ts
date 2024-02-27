@@ -83,6 +83,7 @@ export class AuthService {
         {
           sub: user._id,
           email: user.email,
+          ROLE:user.role,
         },
         {
           secret: 'at-secret',
