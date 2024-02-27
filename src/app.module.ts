@@ -16,6 +16,7 @@ import { ContributionsModule } from './contributions/contributions.module';
 import { AccountsPayableModule } from './accounts-payable/accounts-payable.module';
 import { RolesModule } from './roles/roles.module';
 import { AuthController } from './auth/auth.controller';
+import { WorkspaceModule } from './workspace/workspace.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,14 +35,15 @@ import { AuthController } from './auth/auth.controller';
     ContributionsModule,
     AccountsPayableModule,
     RolesModule,
-    AuthModule
+    AuthModule,
+    WorkspaceModule
   ],
   providers: [ 
-    {
-      provide: APP_GUARD,
-      useClass: AtGuard,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AtGuard,
      
-    },
+    // },
   ],
 })
 export class AppModule {}

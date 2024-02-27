@@ -12,7 +12,7 @@ import { AuthDto } from './../auth/dto/auth.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Query } from '@nestjs/common/decorators';
+import { Put, Query } from '@nestjs/common/decorators';
 
 @Controller({
   path: 'users',
@@ -49,5 +49,15 @@ export class UsersController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.usersService.delete(id);
+  }
+  @Put('addWorkspaceToUserRole')
+  async addWorkspaceToUserRole(@Body() requestBody: { email: string, workspaceName: string }) {
+    const { email, workspaceName } = requestBody;
+    try {
+      const updatedUser = await this.usersService.addWorkspaceToUserRole(email, workspaceName);
+      return { success: true, user: updatedUser };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
   }
 }
