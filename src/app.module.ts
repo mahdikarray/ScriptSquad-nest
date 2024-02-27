@@ -17,6 +17,9 @@ import { AccountsPayableModule } from './accounts-payable/accounts-payable.modul
 import { RolesModule } from './roles/roles.module';
 import { AuthController } from './auth/auth.controller';
 import { WorkspaceModule } from './workspace/workspace.module';
+import { DocumentsModule } from './Document/documents.module';
+import { EditorModule } from './editor/editor.module';
+import { TaskModule } from './Task/Task.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,7 +39,10 @@ import { WorkspaceModule } from './workspace/workspace.module';
     AccountsPayableModule,
     RolesModule,
     AuthModule,
-    WorkspaceModule
+    WorkspaceModule,
+    DocumentsModule,
+    TaskModule,
+    EditorModule
   ],
   providers: [ 
     // {
