@@ -1,67 +1,73 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
-  HttpException,
-  Param,
-  Patch,
   Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Res,
+  UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
-import mongoose from 'mongoose';
+import { CreateDocumentDto } from './dto/createDocument.dto';
+import { UpdateDocumentDto } from './dto/updateDocument.dto';
 import { DocumentService } from './documents.service';
-import { CreateDocumentDto } from './dto/CreateDocument.dto';
-import { UpdateDocumentDto } from './dto/UpdateDocument.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 
-@Controller('Documents')
-export class DocumentsController{
-  constructor(private documentService: DocumentService) {}
+@Controller('documents')
+export class DocumentController {
+  constructor(private readonly documentService: DocumentService) {}
 
-  @Post()
+  @Post('create')
   @UsePipes(new ValidationPipe())
-  createDocument(@Body() createDocumentDto: CreateDocumentDto ) {
+  async create(@Body() createDocumentDto: CreateDocumentDto) {
     return this.documentService.createDocument(createDocumentDto);
   }
 
-  @Get()
-  getDocuments(){
+  @Get('getAll')
+  async findAll() {
     return this.documentService.getDocuments();
   }
 
-  @Get(':id')
-  async getDocumentById(@Param('id') id: string){
-    const isValid = mongoose.Types.ObjectId.isValid(id);
-    if (!isValid) throw new HttpException('Document not found', 404);
-    const findDocument = await this.documentService.getDocumentById(id);
-    if (!findDocument) throw new HttpException('Document not found', 404);
-    return findDocument;
+  @Get('getById/:id')
+  async findOne(@Param('id') id: string) {
+    return this.documentService.getDocumentById(id);
   }
 
-  @Patch(':id')
-  async updateDocument(
-    @Param('id') id: string,
-    @Body() updateDocumentDto: UpdateDocumentDto,
-  ) {
-    const isValid = mongoose.Types.ObjectId.isValid(id);
-    if (!isValid) throw new HttpException('Invalid ID', 400);
-    const updateDocument = await this.documentService.updateDocument(
-      id,
-      updateDocumentDto,
-    );
-    if (!updateDocument) throw new HttpException('Document Not Found', 404);
-    return updateDocument;
+  @Put('update/:id')
+  async update(@Param('id') id: string, @Body() updateDocumentDto: UpdateDocumentDto) {
+    return this.documentService.updateDocument(id, updateDocumentDto);
   }
 
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return this.documentService.deleteDocumentById(id);
+  }
 
-  @Delete(':id')
-  async deleteDocument(@Param('id') id: string){
-    const isValid = mongoose.Types.ObjectId.isValid(id);
-    if (!isValid) throw new HttpException('Invalid ID', 400);
-    const deleteDocument = await this.documentService.deleteDocumentById(id);
-    if (!deleteDocument) throw new HttpException('Document Not Found', 404);
-    return;
-
+  @Post('uploadFile')
+  @UseInterceptors(FileInterceptor(
+    'file',{
+      storage : diskStorage({
+        destination :'./src/documentFiles',
+        filename: (req, file, callBack) =>{
+          const fileName = path.parse(file.originalname).name.replace(/\s/g,'') + Date.now();
+          const extension = path.parse(file.originalname).ext;
+          callBack(null, `${fileName}${extension}`);
+        }
+      })
+    }
+  ))
+  uploadFile(@Res() res, @UploadedFile() file){
+    return res.status(HttpStatus.OK).json({
+      success : true,
+      data: file.path
+    });
   }
 }

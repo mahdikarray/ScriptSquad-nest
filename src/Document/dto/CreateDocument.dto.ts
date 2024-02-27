@@ -1,17 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
-import { Date } from 'mongoose';
+// create-document.dto.ts
+
+import { IsNotEmpty, IsBoolean } from 'class-validator';
 
 export class CreateDocumentDto {
   @IsNotEmpty()
   name: string;
 
-  versionHistory: string;
-
+  @IsNotEmpty()
   title: string;
 
+  @IsBoolean()
   state: boolean;
-  
-  createdAt: Date;
-  
-  updatedAt: Date;
+  userEmail: string;
 }
