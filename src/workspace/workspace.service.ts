@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Workspace } from 'src/workspace.schema';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class WorkspaceService {
@@ -12,8 +14,18 @@ export class WorkspaceService {
         return await createdWorkspace.save();
       }
     
-      async findAll(): Promise<Workspace[]> {
-        return await this.workspaceModel.find().exec();
+      async findAll(): Promise<any[]> {
+        try {
+          const workspaces = await this.workspaceModel.find().exec();
+          const hashedWorkspaces = await Promise.all(workspaces.map(async (workspace) => {
+            const hashedCode = await bcrypt.hash(workspace.code, 10);
+            return { ...workspace.toObject(), code: hashedCode };
+          }));
+          return hashedWorkspaces;
+        } catch (error) {
+          // Handle error
+          throw new Error('Error while finding workspaces');
+        }
       }
     
       async findOne(id: string): Promise<Workspace> {
