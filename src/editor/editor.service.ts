@@ -1,20 +1,16 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post } from './post.schema';
+import { Post ,EditorVersion } from './post.schema';
 
 @Injectable()
 export class EditorService {
   constructor(@InjectModel('Post') private readonly postModel: Model<Post>) {}
 
   async createPost(title: string, data: any): Promise<Post> {
-    if (!title || !data) {
-      throw new BadRequestException('Title and data are required');
-    }
-
-    const newPost = new this.postModel({ title, data });
+    const newPost = new this.postModel({ title, data, versionHistory: [] });
     const savedPost = await newPost.save();
-    return savedPost.toObject(); // Use toObject() to convert to plain JavaScript object
+    return savedPost.toObject();
   }
 
   async updatePost(id: string, newData: any): Promise<Post> {
@@ -23,18 +19,35 @@ export class EditorService {
       throw new NotFoundException('Post not found');
     }
 
-    // Merge the new data with the existing data
-    post.data = { ...post.data, ...newData };
+    const newVersion: EditorVersion = {
+      versionNumber: post.versionHistory.length + 1,
+      title: post.title,
+      data: newData,
+      createdAt: new Date(),
+    };
 
-    return await post.save().then(post => post.toObject()); // Use toObject() to convert to plain JavaScript object
+    post.versionHistory.push(newVersion);
+    post.title = newVersion.title;
+    post.data = newVersion.data;
+
+    return await post.save().then(post => post.toObject());
   }
 
   async getAllPosts(): Promise<Post[]> {
-    return this.postModel.find().lean().exec(); // Use lean() for better performance
+    return this.postModel.find().lean().exec();
   }
 
   async getPostById(id: string): Promise<Post> {
-    return this.postModel.findById(id).lean().exec(); // Use lean() for better performance
+    return this.postModel.findById(id).lean().exec();
+  }
+
+  async getVersionHistory(id: string): Promise<EditorVersion[]> {
+    const post = await this.postModel.findById(id).exec();
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    return post.versionHistory;
   }
 }
 

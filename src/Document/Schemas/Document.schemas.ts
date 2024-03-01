@@ -26,6 +26,7 @@ export class Document {
 
   @Prop({ type: [Object] }) // Utiliser un tableau d'objets génériques
   versionHistory: DocumentVersion[]; // Ne pas utiliser type: [DocumentVersion]
+  
 }
 
 export const DocumentSchema = SchemaFactory.createForClass(Document);

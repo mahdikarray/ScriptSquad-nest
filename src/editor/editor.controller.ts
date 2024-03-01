@@ -25,4 +25,9 @@ export class EditorController {
   async update(@Param('id') id: string, @Body() updateEditorDto: UpdateEditorDto) {
     return this.editorService.updatePost(id, updateEditorDto.data);
   }
+
+  @Get(':id/history')
+  async getVersionHistory(@Param('id') id: string) {
+    return this.editorService.getVersionHistory(id);
+  }
 }
