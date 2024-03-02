@@ -6,6 +6,7 @@ import { UserSchema, User } from './schemas/user.schema';
 import { UserRepository } from './repository/user.repostory';
 import { Workspace, WorkspaceSchema } from 'src/workspace/workspace.schema';
 import { WorkspaceModule } from 'src/workspace/workspace.module';
+import { MailService } from './mail/mail.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { WorkspaceModule } from 'src/workspace/workspace.module';
     WorkspaceModule
   ],
   exports: [MongooseModule, UserRepository, UsersService],
-  providers: [UsersService, UserRepository],
+  providers: [UsersService, UserRepository,MailService],
   controllers: [UsersController],
 })
 export class UsersModule {

@@ -6,11 +6,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Workspace } from 'src/workspace/workspace.schema';
 import { Model } from 'mongoose';
+import { MailService } from './mail/mail.service';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: UserRepository, @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  @InjectModel(Workspace.name) private readonly workspaceModel: Model<Workspace>) {}
+  @InjectModel(Workspace.name) private readonly workspaceModel: Model<Workspace>,private readonly mailService: MailService) {}
 
   async create(createUserDto: any): Promise<User> {
     createUserDto.password = await this.hashPassword(createUserDto.password);
@@ -58,6 +59,8 @@ export class UsersService {
 
     // Add workspace name to user roles if not already present
     if (!user.role.includes(workspaceName)) {
+      await this.mailService.sendWorkspaceInvitation(userEmail, workspaceName); // Assuming you have a method in your mail service to send the invitation
+
       user.role.push(workspaceName);
     } else {
       throw new Error('Workspace already added to user role');
