@@ -19,7 +19,7 @@ import { UpdateDocumentDto } from './dto/UpdateDocument.dto';
 export class DocumentsController{
   constructor(private documentService: DocumentService) {}
 
-  @Post()
+  @Post('create')
   @UsePipes(new ValidationPipe())
   createDocument(@Body() createDocumentDto: CreateDocumentDto ) {
     return this.documentService.createDocument(createDocumentDto);
