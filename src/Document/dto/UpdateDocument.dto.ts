@@ -1,14 +1,9 @@
-// update-document.dto.ts
-
-import { IsNotEmpty, IsBoolean } from 'class-validator';
-
 export class UpdateDocumentDto {
-  @IsNotEmpty()
-  name: string;
+  
+  name?: string;
 
-  @IsNotEmpty()
-  title: string;
+  
+  title?: string;
 
-  @IsBoolean()
-  state: boolean;
+  note?: string;
 }

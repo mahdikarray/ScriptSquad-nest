@@ -1,31 +1,46 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document as MongooseDocument } from 'mongoose';
 
-// DocumentVersion sera utilisé dans le service, donc nous le déclarons ici aussi
 export interface DocumentVersion {
   versionNumber: number;
   name: string;
   title: string;
-  state: boolean;
   createdAt: Date;
-  updatedAt: Date;
+  note?: string;
 }
 
 @Schema()
-export class Document {
-  @Prop({ required: true })
+export class Document extends MongooseDocument {
+  @Prop()
   name: string;
 
-  @Prop({ required: true })
+  @Prop()
   title: string;
 
-  @Prop({ required: true, default: true })
-  state: boolean;
-
-  @Prop({ required: true }) // Ajouter le champ pour l'email de l'utilisateur
+  @Prop()
   userEmail: string;
 
-  @Prop({ type: [Object] }) // Utiliser un tableau d'objets génériques
-  versionHistory: DocumentVersion[]; // Ne pas utiliser type: [DocumentVersion]
+  @Prop({ type: [Object] })
+  versionHistory: DocumentVersion[];
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
+
+  @Prop()
+  note?: string;
+
+  @Prop()
+  contentType: string;
+
+  @Prop()
+  size: number;
+
+  @Prop({ type: Buffer }) // Utiliser un type Buffer pour stocker les données du fichier
+  data: Buffer;
+
 }
 
 export const DocumentSchema = SchemaFactory.createForClass(Document);

@@ -1,6 +1,4 @@
-// create-document.dto.ts
-
-import { IsNotEmpty, IsBoolean } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateDocumentDto {
   @IsNotEmpty()
@@ -9,7 +7,9 @@ export class CreateDocumentDto {
   @IsNotEmpty()
   title: string;
 
-  @IsBoolean()
-  state: boolean;
+  @IsNotEmpty()
   userEmail: string;
+
+  // Ajouter le champ note dans CreateDocumentDto si nécessaire
+  note?: string;
 }

@@ -20,6 +20,7 @@ import { DocumentService } from './documents.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
+import { Response } from 'express';
 
 @Controller('documents')
 export class DocumentController {
@@ -28,9 +29,11 @@ export class DocumentController {
   @Post('create')
   @UsePipes(new ValidationPipe())
   async create(@Body() createDocumentDto: CreateDocumentDto) {
-    return this.documentService.createDocument(createDocumentDto);
-  }
+    const newDocument = await this.documentService.createDocument(createDocumentDto);
 
+    return newDocument;
+  }
+  
   @Get('getAll')
   async findAll() {
     return this.documentService.getDocuments();
@@ -52,22 +55,29 @@ export class DocumentController {
   }
 
   @Post('uploadFile')
-  @UseInterceptors(FileInterceptor(
-    'file',{
-      storage : diskStorage({
-        destination :'./src/documentFiles',
-        filename: (req, file, callBack) =>{
-          const fileName = path.parse(file.originalname).name.replace(/\s/g,'') + Date.now();
-          const extension = path.parse(file.originalname).ext;
-          callBack(null, `${fileName}${extension}`);
-        }
-      })
-    }
-  ))
-  uploadFile(@Res() res, @UploadedFile() file){
-    return res.status(HttpStatus.OK).json({
-      success : true,
-      data: file.path
-    });
-  }
+@UseInterceptors(FileInterceptor('file'))
+async uploadFile(@Res() res, @UploadedFile() file: Express.Multer.File, @Body() body: any) {
+  // Assurez-vous d'avoir les données nécessaires, telles que userEmail et title
+  const userEmail = body.userEmail;
+  const title = body.title;
+
+  const savedFileId = await this.documentService.saveFileToDatabase(file, userEmail, title);
+  
+  return res.status(HttpStatus.OK).json({
+    success: true,
+    fileId: savedFileId,
+  });
+}
+
+
+@Get('download/:id')
+async downloadFile(@Param('id') id: string, @Res() res: Response) {
+  const fileContent = await this.documentService.getFileContent(id);
+
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.presentationml.slideshow');
+  res.setHeader('Content-Disposition', 'attachment; filename=document.pptx');
+
+  res.send(fileContent);
+}
+
 }
