@@ -1,6 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+export interface MulterFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+}
 interface PostData {
     time: number;
     blocks: { id: string; type: string; data: { [key: string]: any } }[];
@@ -16,6 +24,8 @@ interface PostData {
   
     @Prop({ required: true, type: Object })
     data: PostData; // Use the interface here
+    @Prop()
+  image: string;
   }
   
 

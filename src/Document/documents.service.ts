@@ -5,7 +5,7 @@ import { CreateDocumentDto } from './dto/CreateDocument.dto';
 import { UpdateDocumentDto } from './dto/UpdateDocument.dto';
 import { Document } from './Schemas/Document.schemas';
 import { EditorService } from '../editor/editor.service'; // Import the EditorService
-
+import { Multer } from 'multer';
 @Injectable()
 export class DocumentService {
   constructor(
@@ -19,7 +19,7 @@ export class DocumentService {
     const savedDocument = await newDocument.save();
 
     // Create an editor for the document
-    await this.editorService.createPost(savedDocument.title, savedDocument._id); // Assuming title is used for editor title
+    await this.editorService.createPost(savedDocument.title, savedDocument._id,Multer.File); // Assuming title is used for editor title
 
     return savedDocument;
   }
