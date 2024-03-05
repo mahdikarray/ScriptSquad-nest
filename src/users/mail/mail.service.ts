@@ -19,6 +19,7 @@ export class MailService {
       to: userEmail,
       subject: 'Workspace Invitation',
       text: `You have been invited to join the workspace ${workspaceName}. Please accept the invitation.`,
+      template:'./confirmation'
     };
 
     // Send email

@@ -59,7 +59,7 @@ export class UsersService {
 
     // Add workspace name to user roles if not already present
     if (!user.role.includes(workspaceName)) {
-      await this.mailService.sendWorkspaceInvitation(userEmail, workspaceName); // Assuming you have a method in your mail service to send the invitation
+          await this.mailService.sendWorkspaceInvitation(userEmail, workspaceName); // Assuming you have a method in your mail service to send the invitation
 
       user.role.push(workspaceName);
     } else {
