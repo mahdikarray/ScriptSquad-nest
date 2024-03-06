@@ -1,17 +1,15 @@
 import { IsNotEmpty } from 'class-validator';
-import { Date } from 'mongoose';
 
 export class CreateDocumentDto {
   @IsNotEmpty()
   name: string;
 
-  versionHistory: string;
-
+  @IsNotEmpty()
   title: string;
 
-  state: boolean;
-  
-  createdAt: Date;
-  
-  updatedAt: Date;
+  @IsNotEmpty()
+  userEmail: string;
+
+  // Ajouter le champ note dans CreateDocumentDto si nécessaire
+  note?: string;
 }

@@ -1,27 +1,49 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document as MongooseDocument } from 'mongoose';
+import { Post } from 'src/editor/post.schema';
 import {  Schema as MongooseSchema } from 'mongoose';
-import { Post } from '../../editor/post.schema'; // Import the Post schema
+export interface DocumentVersion {
+  versionNumber: number;
+  name: string;
+  title: string;
+  createdAt: Date;
+  note?: string;
+}
+
 @Schema()
-export class Document {
-    @Prop({ required: true })
-    name: string;
+export class Document extends MongooseDocument {
+  @Prop()
+  name: string;
 
-    @Prop()
-    versionHistory: string;
+  @Prop()
+  title: string;
 
-    @Prop()
-    title: string;
+  @Prop()
+  userEmail: string;
 
-    @Prop()
-    state: boolean;
+  @Prop({ type: [Object] })
+  versionHistory: DocumentVersion[];
 
-    @Prop({ type: Date })
-    createdAt: Date;
+  @Prop({ default: Date.now })
+  createdAt: Date;
 
-    @Prop({ type: Date })
-    updatedAt: Date;
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Post' })
+  @Prop({ default: Date.now })
+  updatedAt: Date;
+
+  @Prop()
+  note?: string;
+
+  @Prop()
+  contentType: string;
+
+  @Prop()
+  size: number;
+
+  @Prop({ type: Buffer }) // Utiliser un type Buffer pour stocker les données du fichier
+  data: Buffer;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Post' })
   post: Post;
+
 }
 
 export const DocumentSchema = SchemaFactory.createForClass(Document);

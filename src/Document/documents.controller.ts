@@ -1,67 +1,84 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
-  HttpException,
-  Param,
-  Patch,
   Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Res,
+  UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
-import mongoose from 'mongoose';
+import { CreateDocumentDto } from './dto/createDocument.dto';
+import { UpdateDocumentDto } from './dto/updateDocument.dto';
 import { DocumentService } from './documents.service';
-import { CreateDocumentDto } from './dto/CreateDocument.dto';
-import { UpdateDocumentDto } from './dto/UpdateDocument.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
+import { Response } from 'express';
+import { Multer } from 'multer';
 
-@Controller('Documents')
-export class DocumentsController{
-  constructor(private documentService: DocumentService) {}
+@Controller('documents')
+export class DocumentController {
+  constructor(private readonly documentService: DocumentService) {}
 
   @Post('create')
   @UsePipes(new ValidationPipe())
-  createDocument(@Body() createDocumentDto: CreateDocumentDto ) {
-    return this.documentService.createDocument(createDocumentDto);
-  }
+  async create(@Body() createDocumentDto: CreateDocumentDto) {
+    const newDocument = await this.documentService.createDocument(createDocumentDto);
 
-  @Get()
-  getDocuments(){
+    return newDocument;
+  }
+  
+  @Get('getAll')
+  async findAll() {
     return this.documentService.getDocuments();
   }
 
-  @Get(':id')
-  async getDocumentById(@Param('id') id: string){
-    const isValid = mongoose.Types.ObjectId.isValid(id);
-    if (!isValid) throw new HttpException('Document not found', 404);
-    const findDocument = await this.documentService.getDocumentById(id);
-    if (!findDocument) throw new HttpException('Document not found', 404);
-    return findDocument;
+  @Get('getById/:id')
+  async findOne(@Param('id') id: string) {
+    return this.documentService.getDocumentById(id);
   }
 
-  @Patch(':id')
-  async updateDocument(
-    @Param('id') id: string,
-    @Body() updateDocumentDto: UpdateDocumentDto,
-  ) {
-    const isValid = mongoose.Types.ObjectId.isValid(id);
-    if (!isValid) throw new HttpException('Invalid ID', 400);
-    const updateDocument = await this.documentService.updateDocument(
-      id,
-      updateDocumentDto,
-    );
-    if (!updateDocument) throw new HttpException('Document Not Found', 404);
-    return updateDocument;
+  @Put('update/:id')
+  async update(@Param('id') id: string, @Body() updateDocumentDto: UpdateDocumentDto) {
+    return this.documentService.updateDocument(id, updateDocumentDto);
   }
 
-
-  @Delete(':id')
-  async deleteDocument(@Param('id') id: string){
-    const isValid = mongoose.Types.ObjectId.isValid(id);
-    if (!isValid) throw new HttpException('Invalid ID', 400);
-    const deleteDocument = await this.documentService.deleteDocumentById(id);
-    if (!deleteDocument) throw new HttpException('Document Not Found', 404);
-    return;
-
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return this.documentService.deleteDocumentById(id);
   }
+
+  @Post('uploadFile')
+@UseInterceptors(FileInterceptor('file'))
+async uploadFile(@Res() res: Response, @UploadedFile() file: Multer.File, @Body() body: any) {
+  // Assurez-vous d'avoir les données nécessaires, telles que userEmail et title
+  const userEmail = body.userEmail;
+  const title = body.title;
+
+  const savedFileId = await this.documentService.saveFileToDatabase(file, userEmail, title);
+  
+  return res.status(HttpStatus.OK).json({
+    success: true,
+    fileId: savedFileId,
+  });
+}
+
+
+@Get('download/:id')
+async downloadFile(@Param('id') id: string, @Res() res: Response) {
+  const fileContent = await this.documentService.getFileContent(id);
+
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.presentationml.slideshow');
+  res.setHeader('Content-Disposition', 'attachment; filename=document.pptx');
+
+  res.send(fileContent);
+}
+
 }

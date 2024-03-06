@@ -1,13 +1,9 @@
 export class UpdateDocumentDto {
-  name?: string;
   
-  versionHistory?: string;
+  name?: string;
+
   
   title?: string;
-  
-  state?: boolean;
 
-  createdAt?: Date;
-
-  updatedAt?: Date;
+  note?: string;
 }
