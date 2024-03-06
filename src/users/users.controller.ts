@@ -50,6 +50,7 @@ export class UsersController {
   async remove(@Param('id') id: string) {
     return await this.usersService.delete(id);
   }
+  
   @Put('addWorkspaceToUserRole')
   async addWorkspaceToUserRole(@Body() requestBody: { email: string, workspaceName: string }) {
     const { email, workspaceName } = requestBody;

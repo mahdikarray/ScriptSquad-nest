@@ -6,12 +6,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Workspace } from 'src/workspace/workspace.schema';
 import { Model } from 'mongoose';
-import { MailService } from './mail/mail.service';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: UserRepository, @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  @InjectModel(Workspace.name) private readonly workspaceModel: Model<Workspace>,private readonly mailService: MailService) {}
+  @InjectModel(Workspace.name) private readonly workspaceModel: Model<Workspace>) {}
 
   async create(createUserDto: any): Promise<User> {
     createUserDto.password = await this.hashPassword(createUserDto.password);
@@ -45,28 +44,24 @@ export class UsersService {
   }
 
   async addWorkspaceToUserRole(userEmail: string, workspaceName: string): Promise<User> {
-    // Find the user by ID
     const user = await this.userModel.findOne({ email: userEmail });
     if (!user) {
       throw new Error('User not found');
     }
 
-    // Check if the workspace exists
     const workspace = await this.workspaceModel.findOne({ name: workspaceName });
     if (!workspace) {
       throw new Error('Workspace not found');
     }
 
-    // Add workspace name to user roles if not already present
     if (!user.role.includes(workspaceName)) {
-          await this.mailService.sendWorkspaceInvitation(userEmail, workspaceName); // Assuming you have a method in your mail service to send the invitation
-
       user.role.push(workspaceName);
-    } else {
+    } 
+    
+    else {
       throw new Error('Workspace already added to user role');
     }
 
-    // Save the updated user
     return await user.save();
   }
 }
