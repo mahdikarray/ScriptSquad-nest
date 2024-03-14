@@ -5,6 +5,7 @@ import { EditorModule } from './editor/editor.module';
 import { DocumentsModule } from './Document/documents.module';
 import { TaskModule } from './Task/Task.module';
 import { ChatGateway } from './chat/chat.gateway';
+import { MulterModule } from '@nestjs/platform-express/multer/multer.module';
 
 @Module({
   imports: [
@@ -12,6 +13,9 @@ import { ChatGateway } from './chat/chat.gateway';
     EditorModule,
     DocumentsModule,
     TaskModule,
+    MulterModule.register({
+      dest: './uploads', // Save uploaded files to the ./uploads directory
+    }),
 
   ],
   providers: [ChatGateway],

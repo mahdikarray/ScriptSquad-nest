@@ -7,25 +7,24 @@ export interface EditorVersion {
   data: PostData;
   createdAt: Date;
 }
-interface PostData {
+export interface PostData {
     time: number;
     blocks: { id: string; type: string; data: { [key: string]: any } }[];
     version: string;
-    
   }
   
   export type PostDocument = Post & Document;
   
   @Schema()
   export class Post {
-    @Prop({ required: true })
+    @Prop()
     title: string;
   
     @Prop({ required: true, type: Object })
     data: PostData; // Use the interface here
+
     @Prop({ type: [Object] }) // Utiliser un tableau d'objets génériques
   versionHistory: EditorVersion[]; 
-  
   }
   
 

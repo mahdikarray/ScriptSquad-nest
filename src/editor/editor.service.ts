@@ -1,8 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Post, EditorVersion, PostDocument } from './post.schema';
-
+import { Multer } from 'multer';
+import { Stream } from 'stream';
+import * as path from 'path';
+import * as BufferList from 'bl';
+import axios from 'axios';
+import * as fs from 'fs';
+import { GridFSBucket, ObjectId } from 'mongodb';
 @Injectable()
 export class EditorService {
   constructor(@InjectModel(Post.name) private readonly postModel: Model<PostDocument>) {}
@@ -49,4 +55,14 @@ export class EditorService {
 
     return post.versionHistory;
   }
+  async clearHistory(id: string): Promise<PostDocument> {
+    const post = await this.postModel.findById(id).exec();
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+  
+    post.versionHistory = [];
+    return await post.save();
+  }
+  
 }

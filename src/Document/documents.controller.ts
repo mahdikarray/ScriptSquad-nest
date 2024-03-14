@@ -29,7 +29,7 @@ export class DocumentController {
 
   @Post('create')
   @UsePipes(new ValidationPipe())
-  async create(@Body() createDocumentDto: CreateDocumentDto) {
+  async create(@Body() createDocumentDto: CreateDocumentDto, file: Multer.File) {
     const newDocument = await this.documentService.createDocument(createDocumentDto);
 
     return newDocument;

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Put, Param, Get, UseInterceptors, UploadedFile, Query, Res, NotFoundException, Delete } from '@nestjs/common';
 import { EditorService } from './editor.service';
 import { CreateEditorDto, UpdateEditorDto } from './editor.dto';
 
@@ -30,4 +30,11 @@ export class EditorController {
   async getVersionHistory(@Param('id') id: string) {
     return this.editorService.getVersionHistory(id);
   }
+  @Delete(':id/clear-history')
+  async clearHistory(@Param('id') id: string) {
+    return this.editorService.clearHistory(id);
+  }
+
 }
+
+
