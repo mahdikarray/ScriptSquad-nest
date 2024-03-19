@@ -42,6 +42,22 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class AuthController {
   constructor(private authService: AuthService, private readonly userService: UsersService,private jwtService: JwtService) {}
 
+
+  // @Public()
+  // @Post('/login')
+  // @HttpCode(HttpStatus.OK)
+  // async login(@Body() dto: AuthDto,  @Res() res: Response) {
+  //   const token = await this.authService.login(dto);
+  //   res.cookie('access_cookies', token.access_token, {
+  //     httpOnly: true,
+  //     expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+  //     path: '/',
+  //     sameSite: 'none',
+  //     secure: true,
+  //   });
+  
+  //   return token;
+  // }
   @Public()
   @Post('/login')
   @HttpCode(HttpStatus.OK)

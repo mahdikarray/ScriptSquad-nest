@@ -102,7 +102,28 @@ async login(dto: AuthDto, token: string): Promise<Tokens> {
 }
 
 // **************************
+// async login(dto: AuthDto): Promise<Tokens> {
+//   const user: any = await this.userService.findUserByEmail(dto.email);
 
+//   if (!user) throw new ForbiddenException('Access Denied.');
+
+//   if (!user.isVerify) throw new ForbiddenException('Account not verified.');
+
+//   const passwordMatches = await bcrypt.compare(dto.password, user.password);
+
+//   if (!passwordMatches) throw new ForbiddenException('Access Denied.');
+
+//   // Vérifiez si l'authentification à deux facteurs est activée pour l'utilisateur
+
+
+//   const tokens = await this.getTokens(user);
+
+//   const rtHash = await this.hashPassword(tokens.refresh_token);
+
+//   await this.userService.updateOne(user._id, { hashdRt: rtHash });
+
+//   return tokens;
+// }
 
   // Logout
   async logout(userId: string) {
