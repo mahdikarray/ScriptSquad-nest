@@ -32,12 +32,7 @@ export class Document extends MongooseDocument {
   @Prop()
   note?: string;
 
-  @Prop()
-  contentType: string;
-
-  @Prop()
-  size: number;
-
+ 
   @Prop({ type: Buffer }) // Utiliser un type Buffer pour stocker les données du fichier
   data: Buffer;
 

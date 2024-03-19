@@ -113,9 +113,6 @@ export class DocumentService {
   }
   
   
-  
-  
-
   async deleteDocumentById(id: string) {
     return this.documentModel.findByIdAndDelete(id);
   }
@@ -129,34 +126,7 @@ export class DocumentService {
     return new Date(year, month - 1, day, hours, minutes);
   }
   
-  async saveFileToDatabase(file: Express.Multer.File, userEmail: string, title: string) {
-    // Créer un buffer à partir du fichier en mémoire
-    const bufferStream = new Stream.PassThrough();
-    bufferStream.end(file.buffer);
   
-    // Convertir le bufferStream en Buffer
-    const bl = new BufferList();
-    await new Promise((resolve, reject) => {
-      bufferStream.pipe(bl).on('finish', resolve).on('error', reject);
-    });
-    const bufferData = bl.slice();
-  
-    // Créer un nouveau document avec les données du fichier converties en Buffer
-    const newDocument = new this.documentModel({
-      name: file.originalname,
-      contentType: file.mimetype,
-      size: file.size,
-      data: bufferData, // Utiliser le Buffer converti
-      userEmail: userEmail,
-      title: title,
-    });
-  
-    // Enregistrer le document dans la base de données
-    const savedDocument = await newDocument.save();
-  
-    // Retourner l'ID du document enregistré
-    return savedDocument._id;
-  }
 
   async getFileContent(id: string): Promise<Buffer> {
     const document = await this.documentModel.findById(id);

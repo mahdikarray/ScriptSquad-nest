@@ -54,21 +54,6 @@ export class DocumentController {
     return this.documentService.deleteDocumentById(id);
   }
 
-  @Post('uploadFile')
-@UseInterceptors(FileInterceptor('file'))
-async uploadFile(@Res() res, @UploadedFile() file: Express.Multer.File, @Body() body: any) {
-  // Assurez-vous d'avoir les données nécessaires, telles que userEmail et title
-  const userEmail = body.userEmail;
-  const title = body.title;
-
-  const savedFileId = await this.documentService.saveFileToDatabase(file, userEmail, title);
-  
-  return res.status(HttpStatus.OK).json({
-    success: true,
-    fileId: savedFileId,
-  });
-}
-
 
 @Get('download/:id')
 async downloadFile(@Param('id') id: string, @Res() res: Response) {
