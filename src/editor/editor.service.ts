@@ -48,13 +48,18 @@ export class EditorService {
   }
 
   async getVersionHistory(id: string): Promise<EditorVersion[]> {
+    if (!id) {
+      throw new NotFoundException('Invalid id');
+    }
+  
     const post = await this.postModel.findById(id).exec();
     if (!post) {
       throw new NotFoundException('Post not found');
     }
-
+  
     return post.versionHistory;
   }
+  
   async clearHistory(id: string): Promise<PostDocument> {
     const post = await this.postModel.findById(id).exec();
     if (!post) {
