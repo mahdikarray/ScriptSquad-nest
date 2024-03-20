@@ -10,6 +10,7 @@ import { EventsModule } from './Events/events.module';
 import { FilesModule } from './ImportFiles/files.module';
 import { DocumentsModule } from './Document/documents.module';
 import { RolesModule } from './roles/roles.module';
+import { WorkspaceModule } from './workspace/workspace.module';
 import { ChatGateway } from './chat/chat.gateway';
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ChatGateway } from './chat/chat.gateway';
     DocumentsModule,
     EventsModule,
     FilesModule,
+    WorkspaceModule,
     MulterModule.register({
       dest: './documentFiles', // Destination folder for uploaded files
     }),
