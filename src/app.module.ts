@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { DataBaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
@@ -6,11 +5,12 @@ import { UsersModule } from './users/users.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
 import { ConfigModule } from '@nestjs/config';
-
-
-import { RolesModule } from './roles/roles.module';
-import { AuthController } from './auth/auth.controller';
 import { MulterModule } from '@nestjs/platform-express';
+import { EventsModule } from './Events/events.module';
+import { FilesModule } from './ImportFiles/files.module';
+import { DocumentsModule } from './Document/documents.module';
+import { RolesModule } from './roles/roles.module';
+import { ChatGateway } from './chat/chat.gateway';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,17 +20,13 @@ import { MulterModule } from '@nestjs/platform-express';
     AuthModule,
     UsersModule,
     RolesModule,
-    AuthModule,
-    // MulterModule.register({
-    //   dest: './documentFiles', // Dossier de destination des fichiers uploadés
-    // }),
+    DocumentsModule,
+    EventsModule,
+    FilesModule,
+    MulterModule.register({
+      dest: './documentFiles', // Destination folder for uploaded files
+    }),
   ],
-  providers: [ 
-    // {
-    //   // provide: APP_GUARD,
-    //   // useClass: AtGuard,
-     
-    // },
-  ],
+  providers: [ChatGateway],
 })
 export class AppModule {}
