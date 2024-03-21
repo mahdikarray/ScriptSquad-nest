@@ -12,6 +12,8 @@ import { DocumentsModule } from './Document/documents.module';
 import { RolesModule } from './roles/roles.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { ChatGateway } from './chat/chat.gateway';
+import { EditorModule } from './editor/editor.module';
+import { TaskModule } from './Task/Task.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,12 +21,14 @@ import { ChatGateway } from './chat/chat.gateway';
     }),
     DataBaseModule,
     AuthModule,
+    TaskModule,
     UsersModule,
     RolesModule,
     DocumentsModule,
     EventsModule,
     FilesModule,
     WorkspaceModule,
+    EditorModule,
     MulterModule.register({
       dest: './documentFiles', // Destination folder for uploaded files
     }),
