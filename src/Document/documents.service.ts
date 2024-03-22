@@ -8,6 +8,7 @@ import * as nodemailer from 'nodemailer';
 import { Multer } from 'multer';
 import { Stream } from 'stream';
 import * as BufferList from 'bl';
+import { EditorService } from 'src/editor/editor.service';
 
 @Injectable()
 export class DocumentService {
@@ -15,7 +16,7 @@ export class DocumentService {
   private transporter;
 
   constructor(
-    @InjectModel(Document.name) private readonly documentModel: Model<Document>,
+    @InjectModel(Document.name) private readonly documentModel: Model<Document>, private readonly editorService: EditorService,
   ) {
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -59,6 +60,12 @@ export class DocumentService {
     const savedDocument = await newDocument.save();
     const documentId = savedDocument._id;
 
+    // Create editor here
+    const newEditor = await this.editorService.createPost(createDocumentDto.title, createDocumentDto.name);
+    // Associate editor with the document
+    savedDocument.post = newEditor._id;
+    await savedDocument.save();
+
     await this.sendEmail(
       createDocumentDto.userEmail,
       createDocumentDto.name,
@@ -66,7 +73,8 @@ export class DocumentService {
     );
 
     return savedDocument;
-  }
+}
+
 
   async getDocuments() {
     return this.documentModel.find();

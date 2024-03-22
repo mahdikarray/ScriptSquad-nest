@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DocumentController } from './documents.controller';
 import { DocumentService } from './documents.service';
 import { Document, DocumentSchema } from './Schemas/Document.schemas';
+import { EditorModule } from 'src/editor/editor.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { Document, DocumentSchema } from './Schemas/Document.schemas';
         schema: DocumentSchema,
       },
     ]),
+    EditorModule,
   ],
   providers: [DocumentService],
   controllers: [DocumentController],
