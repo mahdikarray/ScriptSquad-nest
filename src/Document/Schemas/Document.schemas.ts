@@ -38,6 +38,8 @@ export class Document extends MongooseDocument {
   data: Buffer;
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Post' })
   post: Post;
+
+  
 }
 
 export const DocumentSchema = SchemaFactory.createForClass(Document);

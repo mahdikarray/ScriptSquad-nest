@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document } from 'src/Document/Schemas/Document.schemas';
 
 export type WorkspaceDocument = Workspace & Document;
 
@@ -13,6 +13,10 @@ export class Workspace {
 
   @Prop()
    code: string;
+
+  
+  @Prop()
+  documents:Document[];
 
 
    async getCode() {
