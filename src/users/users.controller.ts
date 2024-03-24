@@ -68,6 +68,7 @@ export class UsersController {
             } else {
                 // Gérer d'autres erreurs
                 throw new Error('Une erreur est survenue lors de la mise à jour du nom de l\'utilisateur.');
+                console.log(error);
             }
         }
     }

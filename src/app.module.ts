@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { DataBaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
@@ -33,6 +34,12 @@ import { TaskModule } from './Task/Task.module';
       dest: './documentFiles', // Destination folder for uploaded files
     }),
   ],
-  providers: [ChatGateway],
+  providers: [ChatGateway ,   {
+      provide: APP_GUARD,
+      useClass: AtGuard,
+     
+    },],
+
+  
 })
 export class AppModule {}
